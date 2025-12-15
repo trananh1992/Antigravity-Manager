@@ -50,7 +50,7 @@ impl UserInfo {
 
 
 /// 生成 OAuth 授权 URL
-pub fn get_auth_url() -> String {
+pub fn get_auth_url(redirect_uri: &str) -> String {
     let scopes = vec![
         "https://www.googleapis.com/auth/cloud-platform",
         "https://www.googleapis.com/auth/userinfo.email",
@@ -61,7 +61,7 @@ pub fn get_auth_url() -> String {
 
     let params = vec![
         ("client_id", CLIENT_ID),
-        ("redirect_uri", REDIRECT_URI),
+        ("redirect_uri", redirect_uri),
         ("response_type", "code"),
         ("scope", &scopes),
         ("access_type", "offline"),
@@ -74,7 +74,7 @@ pub fn get_auth_url() -> String {
 }
 
 /// 使用 Authorization Code 交换 Token
-pub async fn exchange_code(code: &str) -> Result<TokenResponse, String> {
+pub async fn exchange_code(code: &str, redirect_uri: &str) -> Result<TokenResponse, String> {
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(15))
         .build()
@@ -84,7 +84,7 @@ pub async fn exchange_code(code: &str) -> Result<TokenResponse, String> {
         ("client_id", CLIENT_ID),
         ("client_secret", CLIENT_SECRET),
         ("code", code),
-        ("redirect_uri", REDIRECT_URI),
+        ("redirect_uri", redirect_uri),
         ("grant_type", "authorization_code"),
     ];
 

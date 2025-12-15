@@ -52,6 +52,7 @@ pub fn run() {
             commands::save_config,
             // 新增命令
             commands::start_oauth_login,
+            commands::cancel_oauth_login,
             commands::import_v1_accounts,
             commands::import_from_db,
             commands::save_text_file,

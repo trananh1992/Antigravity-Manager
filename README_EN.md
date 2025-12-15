@@ -70,50 +70,50 @@ It helps you effortlessly manage dozens of **Google Gemini** and **Claude 3.5** 
 | **Startup Time** | Slow (Interpreted) | **Instant** (Native Binary) | **Blazing Fast** |
 | **Memory Usage** | High (>200MB) | **Tiny** (<50MB) | **Efficient** |
 | **UI/UX** | Basic Material | **Modern Glassmorphism** | **Beautiful** |
-| **Security** | Plaintext/Obfuscated | **Encrypted SQLite** | **Secure** |
-| **Extensibility** | Hard (Python Deps) | **Easy** (Web Stack) | **Rich Ecosystem** |
+| **Security** | Plain text / Simple obfuscation | **Local JSON Storage** | **Transparent & Controllable** |
+| **Extensibility** | Hard (Python dependency hell) | **Easy** (Standard Web Tech) | **Rich Ecosystem** |
 
-## ✨ Features
+## ✨ Key Features
 
 ### 📊 Dashboard
-- **Overview**: Real-time display of total accounts and average quota per model. Health status at a glance.
-- **Smart Recommendation**: Automatically filters the "Best Account" with the most available quota, supporting one-click switching to always use optimal resources.
-- **Monitoring**: Real-time highlighting of low-quota accounts to prevent interruptions.
+- **Global Overview**: Real-time display of total accounts, average quota for each model, health status at a glance.
+- **Smart Recommendation**: Automatically filters the "Best Account" with the most available quota, supports one-click switching to always use optimal resources.
+- **Status Monitoring**: Real-time highlighting of accounts with low quota alerts to avoid development interruptions.
 
 ### 👥 Account Management
-- **Import Methods**:
-    - 🔥 **OAuth**: Open browser for Google login authorization to auto-fetch tokens (Recommended).
-    - 📋 **Manual**: Directly paste Refresh Tokens.
-    - 📂 **V1 Migration**: Automatically scan and batch import legacy data from v1 (`~/.antigravity-agent`).
-    - 🔄 **Local Sync**: Auto-read and import currently logged-in accounts from local IDE databases (Cursor/Windsurf).
-- **Batch Actions**: Bulk refresh quotas, export backups (JSON), and batch delete.
-- **Search**: Fast keyword search by email to easily manage dozens of accounts.
+- **Multi-channel Import**:
+    - 🔥 **OAuth Authorization**: Supports browser-based Google login authorization to automatically acquire Tokens (Recommended).
+    - 📋 **Manual Add**: Supports direct pasting of Refresh Tokens.
+    - 📂 **V1 Migration**: Supports scanning and batch importing old data from v1 version (`~/.antigravity-agent`).
+    - 🔄 **Local Sync**: Supports automatically reading and importing currently logged-in accounts from IDE (Cursor/Windsurf) local database.
+- **Batch Operations**: Batch refresh quota, batch export backup (JSON), batch delete.
+- **Search & Filter**: Supports fast retrieval by email keywords, managing dozens of accounts with ease.
 
 ### 🔄 Quota Sync
-- **Auto Refresh**: Configurable background polling for the latest quota info.
-- **Token Keep-alive**: Built-in automatic token refreshing to ensure connections remain valid.
-- **Precise Display**: Clearly shows remaining percentages and reset times for Gemini / Claude models.
+- **Auto Refresh**: Configurable background automatic polling for latest quota information of all accounts.
+- **Token Keep-alive**: Built-in Token auto-refresh mechanism, auto-renew upon expiration to ensure connection validity.
+- **Precise Display**: Clearly displays specific remaining percentage and reset time for Gemini / Claude models.
 
 ### 🛠️ System Integration
-- **Tray Icon**: Minimizes to the system tray for silent background operation without taking up taskbar space.
-- **Quick Actions**: Tray menu supports one-click quota viewing and quick switching to the next available account.
-- **Secure Storage**: Fully local encrypted SQLite storage. All token data is kept locally on your machine and never uploaded to the cloud.
+- **Tray Resident**: Minimized to system tray, saving taskbar space, running silently in background.
+- **Quick Actions**: Tray menu supports one-click viewing of current quota and quick switching to next available account.
+- **Secure Storage**: Uses local JSON format storage, all Token data is saved only on user device, never uploaded to cloud.
 
 ### ⚙️ Settings
-- **Internationalization**: Native support for **English** / **Simplified Chinese** switching.
-- **Theme**: Perfect adaptation for System Dark/Light modes.
-- **Data Management**: Custom export paths and one-click log cache cleaning.
+- **Internationalization**: Native support for **Simplified Chinese** / **English** real-time switching.
+- **Theme Adaptation**: Perfectly adapts to system Dark / Light mode, eye-friendly for night use.
+- **Data Management**: Supports custom data export path and one-click log cache cleaning.
 
 ## 🛠️ Tech Stack
 
-Built with a cutting-edge modern stack ensuring high performance and maintainability:
+Built with cutting-edge modern tech stack, ensuring high performance and maintainability:
 
-| Module | Tech Choice | Description |
+| Module | Tech Stack | Description |
 | :--- | :--- | :--- |
 | **Frontend** | React 18 + TypeScript | UI Construction & Logic |
-| **UI Framework** | TailwindCSS + DaisyUI | Modern Atomic CSS & Components |
+| **UI Framework** | TailwindCSS + DaisyUI | Modern Atomic CSS Library |
 | **Backend** | Tauri v2 (Rust) | High-performance System Interaction |
-| **Database** | SQLite (rusqlite) | Local Persistent Storage |
+| **Storage** | Local JSON | Local Config & Data Storage |
 | **State** | Zustand | Lightweight Global State Management |
 | **Network** | Reqwest (Async) | Async Network Requests |
 

@@ -188,6 +188,12 @@ pub async fn start_oauth_login(app_handle: tauri::AppHandle) -> Result<Account, 
     modules::upsert_account(user_info.email.clone(), user_info.get_display_name(), token_data)
 }
 
+#[tauri::command]
+pub async fn cancel_oauth_login() -> Result<(), String> {
+    modules::oauth_server::cancel_oauth_flow();
+    Ok(())
+}
+
 // --- 导入命令 ---
 
 #[tauri::command]

@@ -72,7 +72,7 @@
 | **启动速度** | 慢 (需加载 Python 解释器) | **秒开** (原生二进制) | **极速响应** |
 | **内存占用** | 高 (>200MB) | **极低** (<50MB) | **更省资源** |
 | **界面交互** | 基础 Material 风格 | **现代化 Glassmorphism** | **颜值正义** |
-| **安全性** | 明文/简单混淆 | **SQLite 加密存储** | **隐私无忧** |
+| **安全性** | 明文/简单混淆 | **本地 JSON 存储** | **透明可控** |
 | **扩展性** | 难 (Python 依赖地狱) | **易** (标准 Web 技术栈) | **生态丰富** |
 
 ## ✨ 核心特性 (Features)
@@ -99,7 +99,7 @@
 ### 🛠️ 系统集成 (System Integration)
 - **托盘常驻**: 程序可最小化至系统托盘，不占用任务栏空间，后台静默运行。
 - **快捷操作**: 托盘菜单支持一键查看当前账号配额、快速切换下一个可用账号。
-- **安全存储**: 全程基于 SQLite 本地加密存储，所有 Token 数据仅保存在用户本地，绝不上传云端。
+- **安全存储**: 采用本地 JSON 格式存储，所有 Token 数据仅保存在用户设备，绝不上传云端。
 
 ### ⚙️ 个性化设置 (Settings)
 - **国际化**: 原生支持 **简体中文** / **English** 实时切换。
@@ -115,7 +115,7 @@
 | **Frontend** | React 18 + TypeScript | UI 构建与逻辑处理 |
 | **UI Framework** | TailwindCSS + DaisyUI | 现代化原子类样式库 |
 | **Backend** | Tauri v2 (Rust) | 高性能、安全的系统底层交互 |
-| **Database** | SQLite (rusqlite) | 本地数据持久化存储 |
+| **Storage** | Local JSON | 本地配置与数据存储 |
 | **State** | Zustand | 轻量级全局状态管理 |
 | **Network** | Reqwest (Async) | 异步网络请求处理 |
 
@@ -150,6 +150,23 @@ npm run tauri dev
 # 构建通用 macOS 应用 (同时支持 Intel & Apple Silicon)
 npm run build:universal
 ```
+
+## ❓ 常见问题 (FAQ)
+
+### ⚠️ 打开应用提示 "已损坏" 或 "无法打开"？
+
+如果在 macOS 上打开应用时提示 **“Antigravity Tools 已损坏，无法打开”**，这是 macOS Gatekeeper 对未签名应用的默认拦截机制。
+
+**解决方法：**
+
+1. 打开终端 (Terminal)。
+2. 复制并执行以下命令 (可能需要输入密码)：
+
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/Antigravity\ Tools.app
+```
+
+> 注意：请根据实际安装位置调整路径，如果安装在“应用程序”目录，通常就是上面的路径。
 
 ## 👤 作者
 

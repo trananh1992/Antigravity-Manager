@@ -41,6 +41,10 @@ export async function startOAuthLogin(): Promise<Account> {
     return await invoke('start_oauth_login');
 }
 
+export async function cancelOAuthLogin(): Promise<void> {
+    return await invoke('cancel_oauth_login');
+}
+
 // 导入
 export async function importV1Accounts(): Promise<Account[]> {
     return await invoke('import_v1_accounts');

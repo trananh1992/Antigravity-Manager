@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Database, Globe, FileClock, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Plus, Database, Globe, FileClock, Loader2, CheckCircle2, XCircle, Copy } from 'lucide-react';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { useTranslation } from 'react-i18next';
+import { listen } from '@tauri-apps/api/event';
 
 interface AddAccountDialogProps {
     onAdd: (email: string, refreshToken: string) => Promise<void>;
@@ -15,12 +16,13 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<'oauth' | 'token' | 'import'>('oauth');
     const [refreshToken, setRefreshToken] = useState('');
+    const [oauthUrl, setOauthUrl] = useState('');
 
     // UI State
     const [status, setStatus] = useState<Status>('idle');
     const [message, setMessage] = useState('');
 
-    const { startOAuthLogin, importFromDb, importV1Accounts } = useAccountStore();
+    const { startOAuthLogin, cancelOAuthLogin, importFromDb, importV1Accounts } = useAccountStore();
 
     // Reset state when dialog opens or tab changes
     useEffect(() => {
@@ -29,15 +31,35 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
         }
     }, [isOpen, activeTab]);
 
+    // Listen for OAuth URL
+    useEffect(() => {
+        let unlisten: (() => void) | undefined;
+
+        const setupListener = async () => {
+            unlisten = await listen('oauth-url-generated', (event) => {
+                setOauthUrl(event.payload as string);
+                // 自动复制到剪贴板? 可选，这里只设置状态让用户手动复制
+            });
+        };
+
+        setupListener();
+
+        return () => {
+            if (unlisten) unlisten();
+        };
+    }, []);
+
     const resetState = () => {
         setStatus('idle');
         setMessage('');
         setRefreshToken('');
+        setOauthUrl('');
     };
 
     const handleAction = async (actionName: string, actionFn: () => Promise<any>) => {
         setStatus('loading');
         setMessage(`${actionName}...`);
+        setOauthUrl(''); // Clear previous URL
         try {
             await actionFn();
             setStatus('success');
@@ -66,6 +88,19 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
 
     const handleOAuth = () => {
         handleAction(t('accounts.add.tabs.oauth'), startOAuthLogin);
+    };
+
+    const handleCopyUrl = async () => {
+        if (oauthUrl) {
+            try {
+                await navigator.clipboard.writeText(oauthUrl);
+                // 临时显示复制成功 (可以复用 status 或 message，但不想打断 loading 状态)
+                // 这里简单弹个 alert 或者使用 toast，或者改变按钮文本
+                // 为了简单起见，我们暂时不改变全局状态，因为 OAuth 正在进行中 (loading)
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
     };
 
     const handleImportDb = () => {
@@ -167,13 +202,25 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    <button
-                                        className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-                                        onClick={handleOAuth}
-                                        disabled={status === 'loading' || status === 'success'}
-                                    >
-                                        {status === 'loading' ? t('accounts.add.oauth.btn_waiting') : t('accounts.add.oauth.btn_start')}
-                                    </button>
+                                    <div className="space-y-3">
+                                        <button
+                                            className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                            onClick={handleOAuth}
+                                            disabled={status === 'loading' || status === 'success'}
+                                        >
+                                            {status === 'loading' ? t('accounts.add.oauth.btn_waiting') : t('accounts.add.oauth.btn_start')}
+                                        </button>
+
+                                        {oauthUrl && (
+                                            <button
+                                                className="w-full px-4 py-2 bg-white dark:bg-base-100 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-xl border border-dashed border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-base-200 transition-all flex items-center justify-center gap-2"
+                                                onClick={handleCopyUrl}
+                                            >
+                                                <Copy className="w-3.5 h-3.5" />
+                                                复制授权链接
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
@@ -243,8 +290,13 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
                         <div className="flex gap-3 w-full mt-6">
                             <button
                                 className="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-base-200 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-base-300 transition-colors focus:outline-none focus:ring-2 focus:ring-200 dark:focus:ring-base-300"
-                                onClick={() => setIsOpen(false)}
-                                disabled={status === 'loading' || status === 'success'}
+                                onClick={async () => {
+                                    if (status === 'loading' && activeTab === 'oauth') {
+                                        await cancelOAuthLogin();
+                                    }
+                                    setIsOpen(false);
+                                }}
+                                disabled={status === 'success'} // Only disable on success, allow cancel on loading
                             >
                                 {t('accounts.add.btn_cancel')}
                             </button>

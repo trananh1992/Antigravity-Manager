@@ -19,6 +19,7 @@ interface AccountState {
 
     // 新增 actions
     startOAuthLogin: () => Promise<void>;
+    cancelOAuthLogin: () => Promise<void>;
     importV1Accounts: () => Promise<void>;
     importFromDb: () => Promise<void>;
 }
@@ -121,6 +122,15 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;
+        }
+    },
+
+    cancelOAuthLogin: async () => {
+        try {
+            await accountService.cancelOAuthLogin();
+            set({ loading: false, error: null });
+        } catch (error) {
+            console.error('[Store] Cancel OAuth failed:', error);
         }
     },
 
