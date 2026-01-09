@@ -99,6 +99,15 @@ graph TD
     Upstream --> ResponseMapper[Response Mapper]
     ResponseMapper --> Client
 ```
+## Build
+```bash
+Windows: ./build.ps1
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\build.ps1
+MacOS: ./build.sh
+chmod +x build.sh
+./build.sh
+```
 
 ## 📥 Installation
 
