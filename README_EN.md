@@ -107,6 +107,11 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 MacOS: ./build.sh
 chmod +x build.sh
 ./build.sh
+
+MacOS: Change Tauri-plugin-dialog = 2.5.0
+Remove cargo.lock 
+Cargo update, cargo fetch
+./build.sh
 ```
 
 ## 📥 Installation
